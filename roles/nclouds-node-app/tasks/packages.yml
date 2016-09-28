@@ -1,0 +1,17 @@
+---
+
+- name: install system packages
+  apt:
+    name: "{{ item }}"
+    update_cache: true
+    state: installed
+  with_items: "{{ apt_packages }}"
+
+- command: which nodejs
+  register: nclouds_nodejs_binary
+
+- name: Handle legacy node package issue in Debian
+  file:
+    state: link
+    src: "{{ nclouds_nodejs_binary['stdout'] }}"
+    dest: "{{ '/'.join(nclouds_nodejs_binary['stdout'].split('/')[:-1]) }}/node"

@@ -1,0 +1,9 @@
+{
+  "server": true,
+
+  "server_name": "{{consul_server_name}}",
+
+  "ui_dir": "{{consul_ui_dir}}/dist",
+
+  "bootstrap_expect": {{consul_join | length}}
+}

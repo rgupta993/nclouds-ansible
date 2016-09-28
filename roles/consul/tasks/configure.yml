@@ -1,0 +1,48 @@
+- name: add common configuration
+  template: src={{item}} dest={{consul_conf_dir}}/{{item}}
+  with_items:
+    - common.json
+    - connections.json
+    - security.json
+  notify:
+    - restart consul
+
+- name: Add server configuration
+  template: src=server.json dest={{consul_conf_dir}}/server.json
+  when: consul_server
+  notify:
+    - restart consul
+    
+- name: change ownership of consul files
+  file: path={{consul_dir}} owner={{consul_user}} group={{consul_group}} recurse=true
+
+- name: SYSV init script
+  template: 
+    src: consul_sysvinit.j2 
+    dest: /etc/init.d/consul 
+    owner: root 
+    group: root 
+    mode: 0755
+  notify:
+    - restart consul
+
+- meta: flush_handlers
+
+- name: Check if dnsmasq exists
+  stat: path=/etc/dnsmasq.d
+  register: check_path
+
+- name: Configure DNS
+  lineinfile:
+    dest: "/etc/dnsmasq.d/10-consul"
+    line: "server=/consul./127.0.0.1#8600"
+    create: yes
+  when: check_path.stat.exists
+  notify:
+    - restart dns
+
+- name: remove tmp consul zips
+  file: path=/tmp/{{item}}.zip state=absent
+  with_items:
+    - consul_ui
+    - consul

@@ -1,0 +1,39 @@
+---
+
+- hosts: consul_server
+  vars_files:
+    - environments/common/group_vars/consul_server
+  roles:
+    - consul
+  tags:
+    - consul_server
+  become: yes
+  become_method: sudo
+
+- hosts: redis
+  roles:
+    - consul
+    - debops.redis
+  tags:
+    - redis
+  become: yes
+  become_method: sudo
+
+
+- hosts: service_api
+  roles:
+    - consul
+    - nclouds-node-app
+  tags:
+    - app_service
+  become: yes
+  become_method: sudo
+
+- hosts: nginx
+  roles:
+#    - consul   //uncomment if nginx is to be installed on machine other than consul server
+    - jdauphant.nginx
+  tags:
+    - nginx
+  become: yes
+  become_method: sudo

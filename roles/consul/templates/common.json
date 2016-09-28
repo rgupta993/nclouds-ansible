@@ -1,0 +1,24 @@
+{
+  "datacenter": "{{consul_datacenter}}",
+
+  "data_dir": "{{consul_data_dir}}",
+
+  "log_level": "{{consul_log_level}}",
+
+  "node_name": "{{consul_node_name}}",
+
+  "check_update_interval": "{{consul_check_update_interval}}",
+
+  "disable_update_check": {{consul_disable_update_check}},
+
+  "enable_debug": {{consul_enable_debug}},
+
+  "enable_syslog": {{consul_enable_syslog}},
+
+  "leave_on_terminate": {{consul_leave_on_terminate}},
+
+  "skip_leave_on_interrupt": {{consul_skip_leave_on_interrupt}},
+
+  "syslog_facility": "{{consul_syslog_facility}}"
+
+}

@@ -1,0 +1,11 @@
+[program:nclouds-app]
+process_name=nclouds-app
+user={{ app_user }}
+environment=NODE_ENV={{ nclouds_env }}
+command=node app.js
+directory={{ app_path }}
+stdout_logfile={{ app_logs_path }}/stdout.log
+redirect_stderr=true
+stderr_logfile={{ app_logs_path }}/stderr.log
+autostart=true
+autorestart=true

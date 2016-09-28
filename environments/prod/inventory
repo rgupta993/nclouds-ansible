@@ -1,0 +1,18 @@
+[nclouds_app:children]
+service_api
+redis
+consul_server
+nginx
+
+[service_api]
+1.1.1.1 node_name=appnode1
+2.2.2.2 node_name=appnode2
+
+[redis]
+3.3.3.3 node_name=redis
+
+[consul_server]
+4.4.4.4 node_name=server.consul
+
+[nginx]
+4.4.4.4

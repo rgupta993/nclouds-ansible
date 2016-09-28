@@ -1,0 +1,14 @@
+var config = {
+  {{ nclouds_env }}: {
+        redis: {
+            port: "{{ redis__server_port }}",
+            host: "{{ nclouds_redis_server }}",
+            database: "{{ nclouds_redis_database }}",
+            password: "{{ redis__auth_password }}"
+        },
+
+	APP_LISTEN_PORT: "{{ app_server_port }}"
+    }
+}
+
+module.exports = config;

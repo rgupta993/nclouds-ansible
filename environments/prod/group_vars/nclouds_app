@@ -1,0 +1,13 @@
+nclouds_env: "production"
+
+consul_join: '{{groups["consul_server"]}}'
+
+pip_url: "https://bootstrap.pypa.io/get-pip.py"
+
+redis__server_port: 6379
+
+nclouds_redis_server: "redis.node.consul"
+
+redis__auth_password: "nclouds"
+
+nclouds_redis_database: "nclouds"

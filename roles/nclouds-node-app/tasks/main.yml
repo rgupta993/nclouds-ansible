@@ -1,0 +1,5 @@
+---
+
+- include: packages.yml
+- include: setup.yml
+- include: supervisor.yml

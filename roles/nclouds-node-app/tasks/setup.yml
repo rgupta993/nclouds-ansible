@@ -1,0 +1,47 @@
+---
+
+- name: create user
+  user:
+    name: "{{ app_user }}"
+    state: present
+
+- name: setup the git repo
+  git:
+    repo: "{{ app_repo }}"
+    version: "{{ app_branch }}"
+    dest: "{{ app_path }}"
+    force: yes
+  tags:
+    - deploy
+
+- name: ensure ownership of git repo
+  file:
+    path: "{{ app_path }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    recurse: yes
+  tags:
+    - deploy
+
+- name: install node modules
+  npm:
+    path: "{{ app_path }}"
+  tags:
+    - deploy
+
+- name: create log directory
+  file:
+    path: "{{ app_logs_path }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: 0755
+
+- name: setup config.js
+  template:
+    src: config.js.j2
+    dest: "{{ app_path }}/config.js"
+    mode: 0644
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"

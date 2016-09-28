@@ -1,0 +1,61 @@
+- get_url:
+    url: "{{ consul_zip_url }}"
+    dest: "{{ consul_tmp_pkg }}"
+
+- get_url:
+    url: "{{ consul_ui_url }}"
+    dest: "/tmp/consul_ui.zip"
+  when: consul_server == true
+
+- apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - dnsmasq
+    - unzip
+    - python-pip
+
+- name: Install pip dependencies for ansible consul modules to work
+  pip: 
+    name: "{{ item }}"
+  with_items: "{{ consul_server_pip_dependencies }}"
+  when: consul_server == true
+
+- group: name={{consul_group}}
+  
+- user: name={{consul_user}} group={{consul_group}}
+
+- name: create consul dir
+  file:
+    dest: "{{item}}"
+    state: directory
+    owner: "{{consul_user}}"
+    group: "{{consul_group}}"
+    mode: 0775
+  with_items:
+    - '{{consul_conf_dir}}'
+    - '{{consul_data_dir}}'
+    - '{{consul_log_dir}}'
+    - '{{consul_ui_dir}}'
+
+- name: Install Consul
+  unarchive: 
+    src: "{{ consul_tmp_pkg }}"
+    dest: "{{ consul_dir }}"
+    owner: "{{ consul_user }}" 
+    group: "{{ consul_group }}" 
+    mode: 0755 
+    copy: no
+
+- name: Install Consul UI
+  unarchive:
+    src: "/tmp/consul_ui.zip"
+    dest: "{{ consul_ui_dir }}"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0755
+    copy: no
+  when: consul_server == true
+
+- name: make consul executable
+  file: path="{{consul_dir}}/consul" mode=755

@@ -1,0 +1,35 @@
+---
+
+nginx_ubuntu_pkg:
+  - python-selinux
+  - nginx-full
+
+nginx_http_params:
+  - log_format timed_combined '$remote_addr - $remote_user [$time_local] ' '"$request" $status $body_bytes_sent ' '"$http_referer" "$http_user_agent" ' '$request_time $upstream_response_time $pipe'
+
+nginx_configs:
+  upsteam:
+    - "upstream node_app { server appnode1.node.consul:4000 weight=10 max_fails=3 fail_timeout=30s; server appnode2.node.consul:4000 weight=10 max_fails=3 fail_timeout=30s; }"
+
+nginx_events_params:
+  - worker_connections 512
+  - use epoll
+  - multi_accept on
+
+nginx_sites:
+  nclouds:
+    - listen 80
+    - gzip on
+    - gzip_min_length 200
+    - gzip_types text/plain application/json
+    - access_log /var/log/nginx/nclouds.access.log timed_combined
+    - error_log /var/log/nginx/nclouds.error.log
+    - |
+      location / {
+        proxy_pass http://node_app;
+        proxy_read_timeout 30;
+        proxy_set_header X-Forwarded-Host $server_name;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_pass_request_headers      on;
+        proxy_set_header Host $http_host;
+      }

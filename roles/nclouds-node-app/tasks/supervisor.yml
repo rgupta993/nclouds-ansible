@@ -1,0 +1,12 @@
+---
+
+- name: setup supervisor configuration
+  template:
+    src: supervisor.conf.j2
+    dest: /etc/supervisor/conf.d/nclouds-app.conf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: reload supervisorctl
+  command: supervisorctl reload

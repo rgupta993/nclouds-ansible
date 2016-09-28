@@ -1,0 +1,16 @@
+---
+
+# General
+app_logs_path: /var/log/nclouds-node-app
+app_user: nclouds
+
+# Git settings
+app_repo: https://github.com/rgupta993/nclouds-app.git
+app_branch: master
+app_path: /opt/nclouds
+
+apt_packages:
+  - git
+  - nodejs
+  - npm
+  - supervisor
